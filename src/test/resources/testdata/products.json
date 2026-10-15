@@ -1,0 +1,15 @@
+﻿[
+  {"name": "Samsung galaxy s6",  "category": "phone",    "price": "360"},
+  {"name": "Nokia lumia 1520",   "category": "phone",    "price": "820"},
+  {"name": "Nexus 6",            "category": "phone",    "price": "650"},
+  {"name": "Samsung galaxy s7",  "category": "phone",    "price": "800"},
+  {"name": "Sony xperia z5",     "category": "phone",    "price": "320"},
+  {"name": "HTC One M9",         "category": "phone",    "price": "700"},
+  {"name": "Sony vaio i5",       "category": "laptop",   "price": "790"},
+  {"name": "Sony vaio i7",       "category": "laptop",   "price": "395"},
+  {"name": "MacBook air",        "category": "laptop",   "price": "1100"},
+  {"name": "Dell i7 8gb",        "category": "laptop",   "price": "790"},
+  {"name": "2017 Dell 15.6 Inch","category": "laptop",   "price": "399"},
+  {"name": "Apple monitor 24",   "category": "monitor",  "price": "400"},
+  {"name": "ASUS Full HD",       "category": "monitor",  "price": "642"}
+]

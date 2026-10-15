@@ -1,0 +1,40 @@
+# Maven build output
+target/
+!target/.gitkeep
+
+# Maven wrapper metadata (keep mvnw scripts, ignore caches)
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+.vscode/
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Allure HTML reports and results (generated artifacts, not source)
+allure-report/
+allure-results/
+
+# Screenshots and logs (runtime artifacts)
+target/screenshots/
+target/logs/
+
+# Secrets and environment-specific configuration
+.env
+*.env
+local.properties
+secrets.properties
+
+# Docker
+.dockerignore

@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # ===========================================================================
+  # Browser Service: Selenium Standalone Chrome
+  # ===========================================================================
+  selenium-chrome:
+    image: selenium/standalone-chrome:4.18.1
+    container_name: demoblaze-selenium-chrome
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+      - "7900:7900" # VNC web viewer (access via browser at http://localhost:7900, pw: secret)
+    environment:
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_START_VNC=true
+      - START_XVFB=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - test-network
+
+  # ===========================================================================
+  # Test Runner: Maven + Java 21 test execution container
+  # ===========================================================================
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: demoblaze-test-runner
+    depends_on:
+      selenium-chrome:
+        condition: service_healthy
+    environment:
+      - BROWSER=chrome
+      - REMOTE=true
+      - GRID_URL=http://selenium-chrome:4444/wd/hub
+      - HEADLESS=true
+      - BASE_URL=https://www.demoblaze.com/
+      - EXPLICIT_WAIT_SECONDS=15
+      - PAGE_LOAD_TIMEOUT_SECONDS=30
+    volumes:
+      # Mount target directory so logs, screenshots, and Allure results persist on host
+      - ./target:/app/target
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
