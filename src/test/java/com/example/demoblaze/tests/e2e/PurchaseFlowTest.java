@@ -171,6 +171,7 @@ public class PurchaseFlowTest extends BaseTest {
 
         // Verify cart
         CartPage cartPage = homePage.getNavigationBar().clickCart();
+        cartPage.waitForCartItemsCount(2, 10);
         Assert.assertTrue(cartPage.getCartItemCount() >= 2,
                 "Cart should contain at least 2 items.");
         CartAssertions.assertCartTotalMatchesItemSum(cartPage);

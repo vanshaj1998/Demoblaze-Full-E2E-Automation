@@ -46,6 +46,10 @@ public class CartPage extends BasePage {
         return driver.findElements(CART_TABLE_ROWS).size();
     }
 
+    public boolean waitForCartItemsCount(int minCount, int timeoutSeconds) {
+        return WaitUtils.waitForElementsPresent(driver, CART_TABLE_ROWS, minCount, timeoutSeconds);
+    }
+
     public String getTotalPriceText() {
         try {
             return getText(TOTAL_PRICE);
@@ -56,6 +60,13 @@ public class CartPage extends BasePage {
     }
 
     public double getCartTotal() {
+        try {
+            new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(5))
+                    .until(d -> {
+                        String t = d.findElement(TOTAL_PRICE).getText().trim().replaceAll("[^0-9.]", "");
+                        return !t.isBlank() && Double.parseDouble(t) > 0;
+                    });
+        } catch (Exception ignored) {}
         String raw = getTotalPriceText().replaceAll("[^0-9.]", "");
         if (raw.isBlank()) return 0.0;
         return Double.parseDouble(raw);

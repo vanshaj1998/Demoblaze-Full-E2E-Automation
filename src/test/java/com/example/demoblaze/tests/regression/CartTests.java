@@ -57,6 +57,7 @@ public class CartTests extends BaseTest {
         product2.addCurrentProductToCart();
 
         CartPage cartPage = homePage.getNavigationBar().clickCart();
+        cartPage.waitForCartItemsCount(2, 10);
         Assert.assertTrue(cartPage.getCartItemCount() >= 2,
                 "Expected at least 2 items in cart.");
         CartAssertions.assertCartTotalMatchesItemSum(cartPage);
