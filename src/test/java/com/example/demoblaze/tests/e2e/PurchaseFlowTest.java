@@ -94,4 +94,93 @@ public class PurchaseFlowTest extends BaseTest {
         Assert.assertEquals(alertText, "Please fill out Name and Creditcard.",
                 "Expected validation alert when submitting order with empty Name and Card fields.");
     }
+
+    @Test(
+            groups = {"e2e", "regression"},
+            description = "DB-E2E-003: Login then purchase flow with authenticated user"
+    )
+    @Story("Authenticated Purchase")
+    @Severity(SeverityLevel.CRITICAL)
+    public void testAuthenticatedPurchaseFlow() {
+        // Register and login
+        var testUser = TestDataFactory.uniqueUser();
+        homePage.open();
+        homePage.getNavigationBar().clickSignup().registerUser(testUser);
+        homePage.getNavigationBar().clickLogin().loginAs(testUser);
+
+        // Browse and add product
+        homePage.open();
+        ProductPage productPage = homePage.openProduct("Nokia lumia 1520");
+        productPage.addCurrentProductToCart();
+
+        // Checkout
+        CartPage cartPage = homePage.getNavigationBar().clickCart();
+        PlaceOrderModal orderModal = cartPage.clickPlaceOrder();
+        orderModal.submitOrder(TestDataFactory.validCustomer());
+
+        Assert.assertTrue(orderModal.isConfirmationDisplayed(),
+                "Confirmation dialog should appear for authenticated purchase.");
+        Assert.assertEquals(orderModal.getConfirmationHeading(), "Thank you for your purchase!");
+    }
+
+    @Test(
+            groups = {"e2e", "regression"},
+            description = "DB-E2E-004: Purchase laptop category product end-to-end"
+    )
+    @Story("Laptop Purchase Flow")
+    @Severity(SeverityLevel.CRITICAL)
+    public void testLaptopPurchaseFlow() {
+        homePage.open();
+        homePage.openCategory("laptop");
+
+        ProductPage productPage = homePage.openFirstProduct();
+        String productName = productPage.getProductName();
+        productPage.addCurrentProductToCart();
+
+        CartPage cartPage = homePage.getNavigationBar().clickCart();
+        CartAssertions.assertProductInCart(cartPage, productName);
+
+        PlaceOrderModal orderModal = cartPage.clickPlaceOrder();
+        orderModal.submitOrder(TestDataFactory.validCustomer());
+
+        Assert.assertTrue(orderModal.isConfirmationDisplayed(),
+                "Purchase confirmation should be displayed for laptop purchase.");
+        orderModal.confirmPurchaseAndClose();
+    }
+
+    @Test(
+            groups = {"e2e", "regression"},
+            description = "DB-E2E-005: Multi-product checkout with total verification"
+    )
+    @Story("Multi-Product Purchase")
+    @Severity(SeverityLevel.CRITICAL)
+    public void testMultiProductPurchaseFlow() {
+        homePage.open();
+
+        // Add first product
+        ProductPage product1 = homePage.openProduct("Samsung galaxy s6");
+        double price1 = product1.getNumericPrice();
+        product1.addCurrentProductToCart();
+
+        // Return home and add second
+        homePage.getNavigationBar().clickHome();
+        homePage.open();
+        ProductPage product2 = homePage.openProduct("Nokia lumia 1520");
+        double price2 = product2.getNumericPrice();
+        product2.addCurrentProductToCart();
+
+        // Verify cart
+        CartPage cartPage = homePage.getNavigationBar().clickCart();
+        Assert.assertTrue(cartPage.getCartItemCount() >= 2,
+                "Cart should contain at least 2 items.");
+        CartAssertions.assertCartTotalMatchesItemSum(cartPage);
+
+        // Checkout
+        PlaceOrderModal orderModal = cartPage.clickPlaceOrder();
+        orderModal.submitOrder(TestDataFactory.validCustomer());
+
+        Assert.assertTrue(orderModal.isConfirmationDisplayed(),
+                "Purchase confirmation should appear for multi-product order.");
+        orderModal.confirmPurchaseAndClose();
+    }
 }

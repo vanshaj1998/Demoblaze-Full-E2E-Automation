@@ -48,16 +48,12 @@ public class SignupTests extends BaseTest {
         homePage.open();
         SignupModal modal = homePage.getNavigationBar().clickSignup();
 
-        // Register a user once
-        UserData user = TestDataFactory.uniqueUser();
-        modal.registerUser(user);
-
-        // Attempt to register the exact same username again
-        homePage.getNavigationBar().clickSignup();
-        String alertText = modal.registerUser(user);
+        // Attempt to register with known existing user
+        UserData existingUser = TestDataFactory.existingUser();
+        String alertText = modal.registerUser(existingUser);
 
         Assert.assertEquals(alertText, "This user already exist.",
-                "Expected duplicate user alert when re-registering the same username.");
+                "Expected duplicate user alert when re-registering an existing username.");
     }
 
     @Test(
@@ -75,5 +71,38 @@ public class SignupTests extends BaseTest {
 
         Assert.assertEquals(alertText, "Please fill out Username and Password.",
                 "Expected validation alert when registering with blank credentials.");
+    }
+
+    @Test(
+            groups = {"regression"},
+            description = "DB-SIGNUP-004: Registration rejected when password is blank"
+    )
+    @Story("Negative Registration - Blank Password")
+    @Severity(SeverityLevel.NORMAL)
+    public void testBlankPasswordRegistration() {
+        homePage.open();
+        SignupModal modal = homePage.getNavigationBar().clickSignup();
+
+        UserData blankPwdUser = TestDataFactory.userWithBlankPassword();
+        String alertText = modal.registerUser(blankPwdUser);
+
+        Assert.assertEquals(alertText, "Please fill out Username and Password.",
+                "Expected validation alert when registering with blank password.");
+    }
+
+    @Test(
+            groups = {"regression"},
+            description = "DB-SIGNUP-005: Signup modal can be closed via Close button"
+    )
+    @Story("Signup Modal UI")
+    @Severity(SeverityLevel.MINOR)
+    public void testSignupModalCanBeClosed() {
+        homePage.open();
+        SignupModal modal = homePage.getNavigationBar().clickSignup();
+        Assert.assertTrue(modal.isDisplayed(), "Signup modal should be displayed.");
+
+        modal.close();
+        Assert.assertTrue(homePage.getNavigationBar().isBrandDisplayed(),
+                "Brand logo should still be visible after closing signup modal.");
     }
 }

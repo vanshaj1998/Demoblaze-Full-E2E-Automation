@@ -17,6 +17,8 @@ public class NavigationBar extends BasePage {
     private static final By SIGNUP_LINK   = By.id("signin2");
     private static final By LOGOUT_LINK   = By.id("logout2");
     private static final By USER_GREETING = By.id("nameofuser");
+    private static final By CONTACT_LINK  = By.xpath("//a[@data-target='#exampleModal']");
+    private static final By ABOUT_LINK    = By.xpath("//a[@data-target='#videoModal']");
 
     public NavigationBar(WebDriver driver) {
         super(driver);
@@ -81,5 +83,28 @@ public class NavigationBar extends BasePage {
     public void clickHome() {
         log.info("Clicking Home nav button");
         click(HOME_LINK);
+    }
+
+    public void clickBrand() {
+        log.info("Clicking Brand logo");
+        click(BRAND_LOGO);
+    }
+
+    public void clickContact() {
+        log.info("Clicking Contact nav link");
+        click(CONTACT_LINK);
+    }
+
+    public void clickAboutUs() {
+        log.info("Clicking About Us nav link");
+        click(ABOUT_LINK);
+    }
+
+    public boolean isContactLinkDisplayed() {
+        return isDisplayed(CONTACT_LINK);
+    }
+
+    public boolean isAboutLinkDisplayed() {
+        return isDisplayed(ABOUT_LINK);
     }
 }

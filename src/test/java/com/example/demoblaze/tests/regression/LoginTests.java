@@ -118,4 +118,38 @@ public class LoginTests extends BaseTest {
         Assert.assertTrue(nav.isLoginLinkDisplayed(), "Login link should re-appear after logout.");
         Assert.assertTrue(nav.isSignupLinkDisplayed(), "Sign up link should re-appear after logout.");
     }
+
+    @Test(
+            groups = {"regression"},
+            description = "DB-LOGIN-006: Login rejected when password is blank"
+    )
+    @Story("Negative Login - Blank Password")
+    @Severity(SeverityLevel.NORMAL)
+    public void testLoginWithBlankPassword() {
+        homePage.open();
+        LoginModal modal = homePage.getNavigationBar().clickLogin();
+
+        UserData blankPwdUser = TestDataFactory.userWithBlankPassword();
+        String alertText = modal.loginExpectingAlert(blankPwdUser);
+
+        Assert.assertEquals(alertText, "Please fill out Username and Password.",
+                "Expected validation alert when logging in with blank password.");
+    }
+
+    @Test(
+            groups = {"regression"},
+            description = "DB-LOGIN-007: Login modal can be closed via Close button"
+    )
+    @Story("Login Modal UI")
+    @Severity(SeverityLevel.MINOR)
+    public void testLoginModalCanBeClosed() {
+        homePage.open();
+        LoginModal modal = homePage.getNavigationBar().clickLogin();
+        Assert.assertTrue(modal.isDisplayed(), "Login modal should be displayed.");
+
+        modal.close();
+        // After closing, the nav bar should still be visible
+        Assert.assertTrue(homePage.getNavigationBar().isBrandDisplayed(),
+                "Brand logo should still be visible after closing login modal.");
+    }
 }

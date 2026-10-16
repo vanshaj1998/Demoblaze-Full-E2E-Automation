@@ -22,6 +22,13 @@ public class HomePage extends BasePage {
     private static final By CATEGORY_PHONE     = By.xpath("//a[contains(@onclick,\"byCat('phone')\")]");
     private static final By CATEGORY_LAPTOP    = By.xpath("//a[contains(@onclick,\"byCat('notebook')\")]");
     private static final By CATEGORY_MONITOR   = By.xpath("//a[contains(@onclick,\"byCat('monitor')\")]");
+    private static final By NEXT_BUTTON        = By.id("next2");
+    private static final By PREV_BUTTON        = By.id("prev2");
+    private static final By PRODUCT_CARD_PRICES = By.cssSelector("#tbodyid .card h5");
+    private static final By PRODUCT_CARD_IMGS  = By.cssSelector("#tbodyid .card img");
+    private static final By FOOTER_SECTION     = By.id("footc");
+    private static final By CONTACT_MODAL      = By.id("exampleModal");
+    private static final By ABOUT_MODAL        = By.id("videoModal");
 
     private final NavigationBar navBar;
 
@@ -51,8 +58,14 @@ public class HomePage extends BasePage {
             default -> throw new IllegalArgumentException("Unknown category: " + category);
         };
         click(locator);
+        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
         waitForProductsToLoad(PRODUCT_CARDS);
         return this;
+    }
+
+    public void waitForProducts() {
+        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+        waitForProductsToLoad(PRODUCT_CARDS);
     }
 
     public ProductPage openFirstProduct() {
@@ -106,5 +119,60 @@ public class HomePage extends BasePage {
                 .map(e -> e.getText().trim())
                 .filter(t -> !t.isBlank())
                 .toList();
+    }
+
+    public void clickNextPage() {
+        log.info("Clicking Next page button");
+        click(NEXT_BUTTON);
+        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+    }
+
+    public void clickPrevPage() {
+        log.info("Clicking Previous page button");
+        click(PREV_BUTTON);
+        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+    }
+
+    public boolean isNextButtonDisplayed() {
+        return isDisplayed(NEXT_BUTTON);
+    }
+
+    public boolean isPrevButtonDisplayed() {
+        return isDisplayed(PREV_BUTTON);
+    }
+
+    public List<String> getDisplayedProductPrices() {
+        return driver.findElements(PRODUCT_CARD_PRICES).stream()
+                .map(e -> e.getText().trim())
+                .filter(t -> !t.isBlank())
+                .toList();
+    }
+
+    public boolean hasProductImages() {
+        try {
+            List<WebElement> imgs = driver.findElements(PRODUCT_CARD_IMGS);
+            return !imgs.isEmpty() && imgs.stream().allMatch(img -> {
+                String src = img.getAttribute("src");
+                return src != null && !src.isBlank();
+            });
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isFooterDisplayed() {
+        return isDisplayed(FOOTER_SECTION);
+    }
+
+    public boolean isContactModalDisplayed() {
+        return isDisplayed(CONTACT_MODAL);
+    }
+
+    public boolean isAboutModalDisplayed() {
+        return isDisplayed(ABOUT_MODAL);
+    }
+
+    public String getPageTitle() {
+        return driver.getTitle();
     }
 }

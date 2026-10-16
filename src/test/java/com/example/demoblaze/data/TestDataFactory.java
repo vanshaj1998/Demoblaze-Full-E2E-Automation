@@ -59,6 +59,15 @@ public final class TestDataFactory {
         return new UserData("qa_user_" + TestIdGenerator.uniqueSuffix(), "");
     }
 
+    public static UserData userWithSpecialChars() {
+        return new UserData("qa_<script>" + TestIdGenerator.uniqueSuffix(), DEFAULT_PASSWORD);
+    }
+
+    public static UserData userWithLongUsername() {
+        String longName = "qa_" + "a".repeat(200) + "_" + TestIdGenerator.uniqueSuffix();
+        return new UserData(longName, DEFAULT_PASSWORD);
+    }
+
     // -------------------------------------------------------------------------
     // Customer / checkout data (all synthetic)
     // -------------------------------------------------------------------------
@@ -82,6 +91,39 @@ public final class TestDataFactory {
                 "",           // missing Credit Card
                 "12",
                 "2026"
+        );
+    }
+
+    public static CustomerData customerWithOnlyName() {
+        return new CustomerData(
+                "QA Buyer",
+                "",
+                "",
+                "",
+                "",
+                ""
+        );
+    }
+
+    public static CustomerData customerWithOnlyCard() {
+        return new CustomerData(
+                "",
+                "United States",
+                "Austin",
+                "4111111111111111",
+                "12",
+                "2026"
+        );
+    }
+
+    public static CustomerData customerPartialOptionalOnly() {
+        return new CustomerData(
+                "QA Buyer Partial",
+                "",
+                "",
+                "4111111111111111",
+                "",
+                ""
         );
     }
 

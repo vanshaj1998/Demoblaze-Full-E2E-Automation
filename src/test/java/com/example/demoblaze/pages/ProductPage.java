@@ -62,4 +62,22 @@ public class ProductPage extends BasePage {
     public static String expectedAddToCartMessage() {
         return "Product added";
     }
+
+    public String getProductImageSrc() {
+        By imgLocator = By.cssSelector("#imgp img, .product-image img, .carousel-inner img");
+        try {
+            return findVisible(imgLocator).getAttribute("src");
+        } catch (Exception e) {
+            try {
+                return driver.findElement(imgLocator).getAttribute("src");
+            } catch (Exception ex) {
+                return "";
+            }
+        }
+    }
+
+    public boolean hasProductDescription() {
+        String desc = getProductDescription();
+        return desc != null && !desc.isBlank();
+    }
 }
